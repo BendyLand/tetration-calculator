@@ -68,12 +68,9 @@ Numeric* make_large()
 
 size_t push_large(Numeric** num, int val)
 {
-    int* temp;
+    int* temp = NULL;
     if ((*num)->value.large.digits) {
         temp = (int*)realloc((*num)->value.large.digits, ((*num)->value.large.size + 1) * sizeof(int));
-    }
-    else {
-        temp = (int*)malloc(sizeof(int));
     }
     if (!temp) {
         perror("Unable to reallocate memory for large number.\n");
@@ -102,8 +99,7 @@ int pop_large(Numeric** num)
         (*num)->value.large.digits = temp;
     }
     else {
-        free((*num)->value.large.digits);
-        (*num)->value.large.digits = NULL;
+        printf("Cannot reallocate large number any smaller.\n");
     }
     return result;
 }
@@ -133,12 +129,9 @@ Numeric* make_very_large()
 
 size_t push_very_large(Numeric** num, long long val)
 {
-    long long* temp;
+    long long* temp = NULL;
     if ((*num)->value.very_large.digits) {
         temp = (long long*)realloc((*num)->value.very_large.digits, ((*num)->value.very_large.size + 1) * sizeof(long long));
-    }
-    else {
-        temp = (long long*)malloc(sizeof(long long));
     }
     if (!temp) {
         perror("Unable to reallocate memory for very large number.\n");
@@ -167,8 +160,7 @@ long long pop_very_large(Numeric** num)
         (*num)->value.very_large.digits = temp;
     }
     else {
-        free((*num)->value.very_large.digits);
-        (*num)->value.very_large.digits = NULL;
+        printf("Cannot reallocate very large number any lower.\n");
     }
     return result;
 }
