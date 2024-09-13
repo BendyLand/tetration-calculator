@@ -1,5 +1,5 @@
 compiler = "gcc"
 path = ""
-files = ["main.c"]
+files = ["main.c", "utils.c", "numeric.c", "vector.c"]
 extras = "-o main"
-run = "./main"
+run = "./main 1 2"
