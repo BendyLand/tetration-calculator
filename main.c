@@ -11,7 +11,9 @@ int main(int argc, const char** argv)
         printf("Args:\n");
         for (int i = 1; i < argc; i++) {
             if (is_number(argv[i])) {
-                printf("%s\n", argv[i]);
+                int temp = atoi(argv[i]);
+                Numeric* num = make_small(temp);
+                printf("Number: %d\n", num->value.small);
             }
         }
     }
