@@ -8,6 +8,7 @@ typedef enum
     SMALL, 
     MEDIUM, 
     LARGE,
+    VERY_LARGE,
 } NumType;
 
 typedef struct 
@@ -20,6 +21,10 @@ typedef struct
             size_t size;
             int* digits;
         } large;
+        struct {
+            size_t size;
+            long long* digits;
+        } very_large;
     } value;
 } Numeric;
 
@@ -29,5 +34,11 @@ Numeric* make_small(int val);
 size_t free_small(Numeric* num);
 Numeric* make_medium(long long val);
 size_t free_medium(Numeric* num);
-Numeric* alloc_large(size_t size);
+Numeric* make_large();
+size_t push_large(Numeric** num, int val);
+int pop_large(Numeric** num);
 size_t free_large(Numeric** num);
+Numeric* make_very_large();
+size_t push_very_large(Numeric** num, long long val);
+long long pop_very_large(Numeric** num);
+size_t free_very_large(Numeric** num);
