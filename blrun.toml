@@ -1,0 +1,5 @@
+compiler = "gcc"
+path = ""
+files = ["main.c"]
+extras = "-o main"
+run = "./main"
