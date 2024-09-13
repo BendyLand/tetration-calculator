@@ -1,5 +1,4 @@
 #include "numeric.h"
-#include <stdlib.h>
 
 void* malloc_or_exit(size_t size)
 {
@@ -62,38 +61,38 @@ Numeric* make_large()
     Numeric* result = (Numeric*)malloc_or_exit(sizeof(Numeric));
     result->type = LARGE;
     result->value.large.size = 0;
-    result->value.large.digits = NULL;
+    result->value.large.digits = (int*)malloc(sizeof(int));
     return result;
 }
 
 size_t push_large(Numeric** num, int val)
 {
     int* temp = NULL;
-    if ((*num)->value.large.digits) {
-        temp = (int*)realloc((*num)->value.large.digits, ((*num)->value.large.size + 1) * sizeof(int));
+    if (large_digits(num)) {
+        temp = (int*)realloc(large_digits(num), (large_size(num) + 1) * sizeof(int));
     }
     if (!temp) {
-        perror("Unable to reallocate memory for large number.\n");
+        perror("Unable to reallocate memory for large number 1.\n");
         return 1;
     }
     (*num)->value.large.size++;
     (*num)->value.large.digits = temp;
-    (*num)->value.large.digits[(*num)->value.large.size-1] = val;
+    (*num)->value.large.digits[large_size(num)-1] = val;
     return 0;
 }
 
 int pop_large(Numeric** num)
 {
-    if ((*num)->value.large.size == 0) {
+    if (large_size(num) == 0) {
         perror("No elements in large number.\n");
         return -1;
     }
-    int result = (*num)->value.large.digits[(*num)->value.large.size-1];
+    int result = large_digit(num, large_size(num)-1);
     (*num)->value.large.size--;
-    if ((*num)->value.large.size > 0) {
-        int* temp = (int*)realloc((*num)->value.large.digits, ((*num)->value.large.size) * sizeof(int));
+    if (large_size(num) > 0) {
+        int* temp = (int*)realloc(large_digits(num), (large_size(num) + 1) * sizeof(int));
         if (!temp) {
-            perror("Unable to reallocate memory for large number.\n");
+            perror("Unable to reallocate memory for large number 2.\n");
             return -1;
         }
         (*num)->value.large.digits = temp;
@@ -107,8 +106,8 @@ int pop_large(Numeric** num)
 size_t free_large(Numeric** num)
 {
     if (num && *num) {
-        if ((*num)->value.large.digits) {
-            free((*num)->value.large.digits); // here
+        if (large_digits(num)) {
+            free(large_digits(num));
             (*num)->value.large.digits = NULL;
         }
         free(*num);
@@ -123,15 +122,15 @@ Numeric* make_very_large()
     Numeric* result = (Numeric*)malloc_or_exit(sizeof(Numeric));
     result->type = VERY_LARGE;
     result->value.very_large.size = 0;
-    result->value.very_large.digits = NULL;
+    result->value.very_large.digits = (long long*)malloc(sizeof(long long));
     return result;
 }
 
 size_t push_very_large(Numeric** num, long long val)
 {
     long long* temp = NULL;
-    if ((*num)->value.very_large.digits) {
-        temp = (long long*)realloc((*num)->value.very_large.digits, ((*num)->value.very_large.size + 1) * sizeof(long long));
+    if (v_large_digits(num)) {
+        temp = (long long*)realloc(v_large_digits(num), (v_large_size(num) + 1) * sizeof(long long));
     }
     if (!temp) {
         perror("Unable to reallocate memory for very large number.\n");
@@ -139,20 +138,20 @@ size_t push_very_large(Numeric** num, long long val)
     }
     (*num)->value.very_large.size++;
     (*num)->value.very_large.digits = temp;
-    (*num)->value.very_large.digits[(*num)->value.very_large.size-1] = val;
+    (*num)->value.very_large.digits[v_large_size(num)-1] = val;
     return 0;
 }
 
 long long pop_very_large(Numeric** num)
 {
-    if ((*num)->value.very_large.size == 0) {
+    if (v_large_size(num) == 0) {
         perror("No elements in very large number.\n");
         return -1;
     }
-    long long result = (*num)->value.very_large.digits[(*num)->value.very_large.size-1];
+    long long result = v_large_digit(num, v_large_size(num)-1);
     (*num)->value.very_large.size--;
-    if ((*num)->value.very_large.size > 0) {
-        long long* temp = (long long*)realloc((*num)->value.very_large.digits, ((*num)->value.very_large.size) * sizeof(long long));
+    if (v_large_size(num) > 0) {
+        long long* temp = (long long*)realloc(v_large_digits(num), v_large_size(num) * sizeof(long long));
         if (!temp) {
             perror("Unable to reallocate memory for very large number.\n");
             return -1;
@@ -168,8 +167,8 @@ long long pop_very_large(Numeric** num)
 size_t free_very_large(Numeric** num)
 {
     if (num && *num) {
-        if ((*num)->value.very_large.digits) {
-            free((*num)->value.very_large.digits);
+        if (v_large_digits(num)) {
+            free(v_large_digits(num));
             (*num)->value.very_large.digits = NULL;
         }
         free(*num);

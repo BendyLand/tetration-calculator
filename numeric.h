@@ -28,6 +28,36 @@ typedef struct
     } value;
 } Numeric;
 
+static inline size_t large_size(Numeric** num)
+{
+    return (*num)->value.large.size;
+}
+
+static inline int* large_digits(Numeric** num)
+{
+    return (*num)->value.large.digits;
+}
+
+static inline int large_digit(Numeric** num, size_t pos)
+{
+    return (*num)->value.large.digits[pos];
+}
+
+static inline size_t v_large_size(Numeric** num)
+{
+    return (*num)->value.very_large.size;
+}
+
+static inline long long* v_large_digits(Numeric** num)
+{
+    return (*num)->value.very_large.digits;
+}
+
+static inline long long v_large_digit(Numeric** num, size_t pos)
+{
+    return (*num)->value.very_large.digits[pos];
+}
+
 void* malloc_or_exit(size_t size);
 void* calloc_or_exit(size_t num, size_t size);
 Numeric* make_small(int val);
