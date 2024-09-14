@@ -6,3 +6,4 @@
 #include <string.h>
 
 bool is_number(const char* arg);
+bool check_input_parameters(int a, int b);

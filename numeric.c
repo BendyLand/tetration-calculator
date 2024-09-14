@@ -4,7 +4,7 @@ void* malloc_or_exit(size_t size)
 {
     void* result = malloc(size);
     if (!result) {
-        perror("Error allocating memory.\n");
+        fprintf(stderr, "Error allocating memory.\n");
         exit(EXIT_FAILURE);
     }
     return result;
@@ -14,7 +14,7 @@ void* calloc_or_exit(size_t num, size_t size)
 {
     void* result = calloc(num, size);
     if (!result) {
-        perror("Error allocating memory.\n");
+        fprintf(stderr, "Error allocating memory.\n");
         exit(EXIT_FAILURE);
     }
     return result;
@@ -61,18 +61,22 @@ Numeric* make_large()
     Numeric* result = (Numeric*)malloc_or_exit(sizeof(Numeric));
     result->type = LARGE;
     result->value.large.size = 0;
-    result->value.large.digits = (int*)malloc(sizeof(int));
+    result->value.large.digits = NULL;
     return result;
 }
 
+//todo: Make capacity field to handle dynamic resizing more efficiently
 size_t push_large(Numeric** num, int val)
 {
-    int* temp = NULL;
+    int* temp;
     if (large_digits(num)) {
         temp = (int*)realloc(large_digits(num), (large_size(num) + 1) * sizeof(int));
     }
+    else {
+        temp = (int*)malloc(sizeof(int)); 
+    }
     if (!temp) {
-        perror("Unable to reallocate memory for large number 1.\n");
+        fprintf(stderr, "Unable to reallocate memory for large number 1.\n");
         return 1;
     }
     (*num)->value.large.size++;
@@ -81,10 +85,11 @@ size_t push_large(Numeric** num, int val)
     return 0;
 }
 
+//todo: Make capacity field to handle dynamic resizing more efficiently
 int pop_large(Numeric** num)
 {
     if (large_size(num) == 0) {
-        perror("No elements in large number.\n");
+        fprintf(stderr, "No elements in large number.\n");
         return -1;
     }
     int result = large_digit(num, large_size(num)-1);
@@ -92,7 +97,7 @@ int pop_large(Numeric** num)
     if (large_size(num) > 0) {
         int* temp = (int*)realloc(large_digits(num), (large_size(num) + 1) * sizeof(int));
         if (!temp) {
-            perror("Unable to reallocate memory for large number 2.\n");
+            fprintf(stderr, "Unable to reallocate memory for large number 2.\n");
             return -1;
         }
         (*num)->value.large.digits = temp;
@@ -122,18 +127,22 @@ Numeric* make_very_large()
     Numeric* result = (Numeric*)malloc_or_exit(sizeof(Numeric));
     result->type = VERY_LARGE;
     result->value.very_large.size = 0;
-    result->value.very_large.digits = (long long*)malloc(sizeof(long long));
+    result->value.very_large.digits = NULL;
     return result;
 }
 
+//todo: Make capacity field to handle dynamic resizing more efficiently
 size_t push_very_large(Numeric** num, long long val)
 {
     long long* temp = NULL;
     if (v_large_digits(num)) {
         temp = (long long*)realloc(v_large_digits(num), (v_large_size(num) + 1) * sizeof(long long));
     }
+    else {
+        temp = (long long*)malloc(v_large_size(num) * sizeof(long long));
+    }
     if (!temp) {
-        perror("Unable to reallocate memory for very large number.\n");
+        fprintf(stderr, "Unable to reallocate memory for very large number.\n");
         return 1;
     }
     (*num)->value.very_large.size++;
@@ -142,10 +151,11 @@ size_t push_very_large(Numeric** num, long long val)
     return 0;
 }
 
+//todo: Make capacity field to handle dynamic resizing more efficiently
 long long pop_very_large(Numeric** num)
 {
     if (v_large_size(num) == 0) {
-        perror("No elements in very large number.\n");
+        fprintf(stderr, "No elements in very large number.\n");
         return -1;
     }
     long long result = v_large_digit(num, v_large_size(num)-1);
@@ -153,7 +163,7 @@ long long pop_very_large(Numeric** num)
     if (v_large_size(num) > 0) {
         long long* temp = (long long*)realloc(v_large_digits(num), v_large_size(num) * sizeof(long long));
         if (!temp) {
-            perror("Unable to reallocate memory for very large number.\n");
+            fprintf(stderr, "Unable to reallocate memory for very large number.\n");
             return -1;
         }
         (*num)->value.very_large.digits = temp;
